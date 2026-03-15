@@ -17,14 +17,6 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Sudoku" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-        <Button Content="Start Game"
-                Command="{Binding StartGameCommand}"
-                Width="150"
-                Height="50"
-                HorizontalAlignment="Center"/>
-    </StackPanel>
-    
+    <ContentControl x:Name="MainContent"/>
     
 </Window>
