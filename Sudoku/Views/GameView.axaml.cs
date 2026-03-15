@@ -69,81 +69,81 @@ public partial class GameView : UserControl
     }
     
     private bool SolveBoard(int[,] board)
+    {
+        for (int row = 0; row < 9; row++)
         {
-            for (int row = 0; row < 9; row++)
+            for (int col = 0; col < 9; col++)
             {
-                for (int col = 0; col < 9; col++)
+                if (board[row, col] == 0)
                 {
-                    if (board[row, col] == 0)
+                    // Shuffle numbers for randomness
+                    var nums = Enumerable.Range(1, 9).OrderBy(_ => Random.Shared.Next()).ToList();
+                    foreach (int num in nums)
                     {
-                        // Shuffle numbers for randomness
-                        var nums = Enumerable.Range(1, 9).OrderBy(_ => Random.Shared.Next()).ToList();
-                        foreach (int num in nums)
+                        if (IsValid(board, row, col, num))
                         {
-                            if (IsValid(board, row, col, num))
-                            {
-                                board[row, col] = num;
-                                if (SolveBoard(board)) return true;
-                                board[row, col] = 0; // backtrack
-                            }
+                            board[row, col] = num;
+                            if (SolveBoard(board)) return true;
+                            board[row, col] = 0; // backtrack
                         }
-                        return false; // no valid number found
                     }
+                    return false; // no valid number found
                 }
             }
-            return true; // all cells filled
+        }
+        return true; // all cells filled
+    }
+
+    private bool IsValid(int[,] board, int row, int col, int num)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            if (board[row, i] == num) return false; // row
+            if (board[i, col] == num) return false; // col
         }
 
-        private bool IsValid(int[,] board, int row, int col, int num)
-        {
-            for (int i = 0; i < 9; i++)
+        int boxRow = (row / 3) * 3;
+        int boxCol = (col / 3) * 3;
+        for (int r = boxRow; r < boxRow + 3; r++)
+            for (int c = boxCol; c < boxCol + 3; c++)
+                if (board[r, c] == num) return false; // box
+
+        return true;
+    }
+
+    private void FillGrid(int emptyCells)
+    {
+        // Step 1: generate complete valid board
+        SolveBoard(solution);
+
+        // Step 2: copy to UI, then remove cells for puzzle
+        var positions = Enumerable.Range(0, 81)
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(emptyCells)
+            .ToHashSet();
+
+        _isFillingPuzzle = true;
+        for (int row = 0; row < 9; row++)
+            for (int col = 0; col < 9; col++)
             {
-                if (board[row, i] == num) return false; // row
-                if (board[i, col] == num) return false; // col
-            }
-
-            int boxRow = (row / 3) * 3;
-            int boxCol = (col / 3) * 3;
-            for (int r = boxRow; r < boxRow + 3; r++)
-                for (int c = boxCol; c < boxCol + 3; c++)
-                    if (board[r, c] == num) return false; // box
-
-            return true;
-        }
-
-        private void FillGrid(int emptyCells)
-        {
-            // Step 1: generate complete valid board
-            SolveBoard(solution);
-
-            // Step 2: copy to UI, then remove cells for puzzle
-            var positions = Enumerable.Range(0, 81)
-                .OrderBy(_ => Random.Shared.Next())
-                .Take(emptyCells)
-                .ToHashSet();
-
-            _isFillingPuzzle = true;
-            for (int row = 0; row < 9; row++)
-                for (int col = 0; col < 9; col++)
+                int idx = row * 9 + col;
+                if (positions.Contains(idx))
                 {
-                    int idx = row * 9 + col;
-                    if (positions.Contains(idx))
-                    {
-                        cells[row, col].Text = ""; // leave empty for player
-                        cells[row, col].IsReadOnly = false; // player can edit
-                    }
-                    else
-                    {
-                        cells[row, col].Text = solution[row, col].ToString();
-                        cells[row, col].Text = solution[row, col].ToString();
-                        cells[row, col].IsReadOnly = true;  // locked
-                        cells[row, col].Foreground = Brushes.Gray; // visually distinct                       
-                    }
+                    cells[row, col].Text = ""; // leave empty for player
+                    cells[row, col].IsReadOnly = false; // player can edit
                 }
-            _isFillingPuzzle = false;
-        }
+                else
+                {
+                    cells[row, col].Text = solution[row, col].ToString();
+                    cells[row, col].Text = solution[row, col].ToString();
+                    cells[row, col].IsReadOnly = true;  // locked
+                    cells[row, col].Foreground = Brushes.Gray; // visually distinct                       
+                }
+            }
+        _isFillingPuzzle = false;
+    }
         
-        private void CheckSolution_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void CheckSolution_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             bool correct = true;
 
