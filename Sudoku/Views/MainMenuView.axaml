@@ -2,11 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Sudoku.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Sudoku.Views.MainMenuView">
-    <StackPanel HorizontalAlignment="Center" 
-                VerticalAlignment="Center"
-                Spacing="20">
+             x:Class="Sudoku.Views.MainMenuView"
+             x:DataType="vm:MenuViewModel"> 
+        
+        <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Spacing="20">
         
         <TextBlock Text="Sudoku"
                    FontSize="48"
@@ -17,6 +20,24 @@
                 HorizontalAlignment="Center"
                 Width="200"
                 Click="StartGame_Click"/>
+        
+        <TextBlock Text="Select Difficulty:" FontSize="18"/>
+
+        <!-- Highlight the active button using a simple opacity trick -->
+        <Button Content="Easy"
+                Command="{Binding SetDifficultyCommand}"
+                CommandParameter="Easy" />
+
+        <Button Content="Normal"
+                Command="{Binding SetDifficultyCommand}"
+                CommandParameter="Normal" />
+
+        <Button Content="Hard"
+                Command="{Binding SetDifficultyCommand}"
+                CommandParameter="Hard" />
+
+        <!-- Shows the currently selected difficulty -->
+        <TextBlock Text="{Binding CurrentDifficulty, StringFormat='Difficulty: {0}'}" />
         
     </StackPanel>
 </UserControl>

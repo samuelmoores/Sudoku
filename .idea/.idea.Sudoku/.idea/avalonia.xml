@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="Sudoku/App.axaml" value="Sudoku/Sudoku.csproj" />
         <entry key="Sudoku/MenuWindow.axaml" value="Sudoku/Sudoku.csproj" />
         <entry key="Sudoku/Views/GameView.axaml" value="Sudoku/Sudoku.csproj" />
         <entry key="Sudoku/Views/MainMenu.axaml" value="Sudoku/Sudoku.csproj" />

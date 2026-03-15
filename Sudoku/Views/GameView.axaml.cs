@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Sudoku.ViewModels;
 
 namespace Sudoku.Views;
 
@@ -14,11 +15,23 @@ public partial class GameView : UserControl
     private const int Padding = 30;
     private bool _isFillingPuzzle = false;
     
-    public GameView()
+    public GameView(GameViewModel vm)
     {
         InitializeComponent();
         BuildGrid();
-        FillGrid(40);
+
+        switch (vm.Difficulty)
+        {
+            case "Easy":
+                FillGrid(20);
+                break;
+            case "Normal":
+                FillGrid(40);
+                break;
+            case "Hard":
+                FillGrid(60);
+                break;
+        }
     }
 
     private void BuildGrid()
