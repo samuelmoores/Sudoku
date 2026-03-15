@@ -28,9 +28,9 @@
                 Command="{Binding SetDifficultyCommand}"
                 CommandParameter="Easy" />
 
-        <Button Content="Normal"
+        <Button Content="Medium"
                 Command="{Binding SetDifficultyCommand}"
-                CommandParameter="Normal" />
+                CommandParameter="Medium" />
 
         <Button Content="Hard"
                 Command="{Binding SetDifficultyCommand}"

@@ -17,6 +17,9 @@ public partial class MainMenuView : UserControl
     {
         var window = (MainWindow)this.VisualRoot!;
         var vm = (MainWindowViewModel)window.DataContext!;
+
+        vm.StartGame();
+        
         window.NavigateTo(new GameView(vm.GameViewModel));
     }
     

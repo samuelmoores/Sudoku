@@ -20,17 +20,24 @@ public partial class GameView : UserControl
         InitializeComponent();
         BuildGrid();
 
-        switch (vm.Difficulty)
+        if (vm.IsFromFile)
         {
-            case "Easy":
-                FillGrid(20);
-                break;
-            case "Normal":
-                FillGrid(40);
-                break;
-            case "Hard":
-                FillGrid(60);
-                break;
+            FillGridFromLoaded(vm.LoadedPuzzle!, vm.LoadedSolution!);
+        }
+        else
+        {
+            switch (vm.Difficulty)
+            {
+                case "Easy":
+                    FillGrid(20);
+                    break;
+                case "Normal":
+                    FillGrid(40);
+                    break;
+                case "Hard":
+                    FillGrid(60);
+                    break;
+            }
         }
     }
 
@@ -153,6 +160,30 @@ public partial class GameView : UserControl
                     cells[row, col].Foreground = Brushes.Gray; // visually distinct                       
                 }
             }
+        _isFillingPuzzle = false;
+    }
+    
+    private void FillGridFromLoaded(int[,] puzzle, int[,] loadedSolution)
+    {
+        // Copy into the solution array so CheckSolution_Click still works
+        Array.Copy(loadedSolution, solution, 81);
+
+        _isFillingPuzzle = true;
+        for (int row = 0; row < 9; row++)
+        for (int col = 0; col < 9; col++)
+        {
+            if (puzzle[row, col] == 0)
+            {
+                cells[row, col].Text = "";
+                cells[row, col].IsReadOnly = false;
+            }
+            else
+            {
+                cells[row, col].Text = puzzle[row, col].ToString();
+                cells[row, col].IsReadOnly = true;
+                cells[row, col].Foreground = Brushes.Gray;
+            }
+        }
         _isFillingPuzzle = false;
     }
         
