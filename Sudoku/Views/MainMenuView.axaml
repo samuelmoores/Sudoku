@@ -3,41 +3,57 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Sudoku.ViewModels"
+             xmlns:models="clr-namespace:Sudoku.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Sudoku.Views.MainMenuView"
              x:DataType="vm:MenuViewModel"> 
         
-        <StackPanel HorizontalAlignment="Center" 
-                    VerticalAlignment="Center"
-                    Spacing="20">
+        <Grid>
+    <!-- Main menu content -->
+    <StackPanel HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Spacing="20">
         
-        <TextBlock Text="Sudoku"
-                   FontSize="48"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"/>
+        <TextBlock Text="Sudoku" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center"/>
         
-        <Button Content="Start Game"
-                HorizontalAlignment="Center"
-                Width="200"
-                Click="StartGame_Click"/>
+        <Button Content="Start Game" HorizontalAlignment="Center" Width="200" Click="StartGame_Click"/>
         
         <TextBlock Text="Select Difficulty:" FontSize="18"/>
 
-        <!-- Highlight the active button using a simple opacity trick -->
-        <Button Content="Easy"
-                Command="{Binding SetDifficultyCommand}"
-                CommandParameter="Easy" />
+        <Button Content="Easy" Command="{Binding SetDifficultyCommand}" CommandParameter="Easy" />
+        <Button Content="Medium" Command="{Binding SetDifficultyCommand}" CommandParameter="Medium" />
+        <Button Content="Hard" Command="{Binding SetDifficultyCommand}" CommandParameter="Hard" />
 
-        <Button Content="Medium"
-                Command="{Binding SetDifficultyCommand}"
-                CommandParameter="Medium" />
-
-        <Button Content="Hard"
-                Command="{Binding SetDifficultyCommand}"
-                CommandParameter="Hard" />
-
-        <!-- Shows the currently selected difficulty -->
         <TextBlock Text="{Binding CurrentDifficulty, StringFormat='Difficulty: {0}'}" />
         
+        <Button Content="Load Game" Command="{Binding OpenLoadDialogCommand}" />
     </StackPanel>
+
+    <!-- Overlay - now sits on top of StackPanel because both are in a Grid -->
+    <Panel IsVisible="{Binding IsLoadDialogOpen}" Background="#AA000000">
+        <Border Background="White" Padding="20" CornerRadius="8"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MinWidth="200">
+            <StackPanel>
+                <TextBlock Text="Load Game" FontSize="18" Margin="0 0 0 12" Foreground="Black"/>
+        
+                <ListBox ItemsSource="{Binding SaveSlots}"
+                         SelectionMode="Single"
+                         SelectionChanged="SaveSlotsList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:CurrentPuzzleState">
+                            <StackPanel Margin="4">
+                                <TextBlock Text="{Binding PuzzleTitle}" FontWeight="Bold" Foreground="Black"/>
+                                <TextBlock Text="{Binding Difficulty}" FontSize="12" Foreground="Black"/>
+                                <TextBlock Text="{Binding SavedAt}" FontSize="11" Foreground="Black"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Button Content="Cancel" Command="{Binding CloseLoadDialogCommand}" Margin="0 12 0 0"/>
+            </StackPanel>
+        </Border>
+    </Panel>
+</Grid>
 </UserControl>

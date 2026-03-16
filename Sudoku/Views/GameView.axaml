@@ -16,6 +16,8 @@
                 Width="200"
                 Click="CheckSolution_Click"/>
         
+        <Button Content="Save Game" Click="SaveGame_Click" />
+        
         <TextBlock x:Name="ResultText"
                    HorizontalAlignment="Center"
                    FontSize="18"

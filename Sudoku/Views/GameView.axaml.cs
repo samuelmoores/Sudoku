@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media;
+using Sudoku.Models;
 using Sudoku.ViewModels;
 
 namespace Sudoku.Views;
@@ -14,30 +17,20 @@ public partial class GameView : UserControl
     private const int CellSize = 40;
     private const int Padding = 30;
     private bool _isFillingPuzzle = false;
+    private readonly GameViewModel _vm;
     
     public GameView(GameViewModel vm)
     {
+        _vm = vm;
         InitializeComponent();
         BuildGrid();
 
         if (vm.IsFromFile)
         {
             FillGridFromLoaded(vm.LoadedPuzzle!, vm.LoadedSolution!);
-        }
-        else
-        {
-            switch (vm.Difficulty)
-            {
-                case "Easy":
-                    FillGrid(20);
-                    break;
-                case "Normal":
-                    FillGrid(40);
-                    break;
-                case "Hard":
-                    FillGrid(60);
-                    break;
-            }
+            
+            if (vm.SavedPlayerGrid != null)
+                RestoreProgress(vm.SavedPlayerGrid);
         }
     }
 
@@ -65,6 +58,7 @@ public partial class GameView : UserControl
                 {
                     TextAlignment = Avalonia.Media.TextAlignment.Center,
                     FontSize = 18,
+                    Foreground = Brushes.DodgerBlue,
                     BorderThickness = new Thickness(0),
                     Background = Brushes.White,
                     VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center,
@@ -209,4 +203,27 @@ public partial class GameView : UserControl
 
             ResultText.Text = correct ? "Congratulations! 🎉" : "Some cells are incorrect.";
         }
+    
+    private void SaveGame_Click(object sender, RoutedEventArgs e)
+    {
+        // Collect what the player has typed into each cell
+        var playerGrid = new List<List<string>>();
+        for (int row = 0; row < 9; row++)
+        {
+            var rowData = new List<string>();
+            for (int col = 0; col < 9; col++)
+                rowData.Add(cells[row, col].Text ?? "");
+            playerGrid.Add(rowData);
+        }
+
+        _vm.SaveCurrentPuzzle(playerGrid);
+    }
+    
+    private void RestoreProgress(List<List<string>> playerGrid)
+    {
+        for (int row = 0; row < 9; row++)
+        for (int col = 0; col < 9; col++)
+            if (!cells[row, col].IsReadOnly) // only restore editable cells
+                cells[row, col].Text = playerGrid[row][col];
+    }
 }

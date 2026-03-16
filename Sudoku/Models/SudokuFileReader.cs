@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -21,7 +22,16 @@ public class SudokuFileReader
             // Detect puzzle header e.g. "PUZZLE 1 (Easy)"
             if (trimmed.StartsWith("PUZZLE"))
             {
-                current = new SudokuPuzzle(trimmed);
+                // "PUZZLE 1 (Easy)" -> number = "1", difficulty = "Easy"
+                var parts = trimmed.Split(' ');
+                Console.WriteLine($"Parts: {parts.Length}");
+                foreach (var part in parts)
+                    Console.WriteLine($"  '{part}'");
+    
+                var number = parts[1];
+                var difficulty = parts[2].Trim('(', ')');
+    
+                current = new SudokuPuzzle(number, difficulty);
                 gridLines.Clear();
                 readingSolution = false;
                 continue;

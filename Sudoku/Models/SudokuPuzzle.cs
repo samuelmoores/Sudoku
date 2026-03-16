@@ -6,12 +6,15 @@ namespace Sudoku.Models;
 public class SudokuPuzzle
 {
     public string Title { get; set; }
+    public string Difficulty { get; set; }
+
     public int[,] Puzzle { get; set; }   // 0 = empty
     public int[,] Solution { get; set; }
  
-    public SudokuPuzzle(string title)
+    public SudokuPuzzle(string title, string difficulty)
     {
         Title = title;
+        Difficulty = difficulty;
         Puzzle = new int[9, 9];
         Solution = new int[9, 9];
     }
